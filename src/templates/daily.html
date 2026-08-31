@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}AI信息雷达 · {{ date_str }}{% endblock %}
+
+{% block content %}
+
+<!-- 顶部导航 -->
+<nav class="daily-nav">
+    <a href="{{ url_for('index') }}" class="nav-home">← 返回首页</a>
+    <div class="nav-pages">
+        {% if older %}
+        <a href="{{ url_for('daily', date_str=older) }}">« {{ older }}</a>
+        {% endif %}
+        <span class="nav-current">{{ date_str }}</span>
+        {% if newer %}
+        <a href="{{ url_for('daily', date_str=newer) }}">{{ newer }} »</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- 日报正文（Markdown 渲染） -->
+<article class="daily-content">
+    {{ content | safe }}
+</article>
+
+<script>
+/* 外部链接在新标签打开（学习资源等） */
+document.querySelectorAll('.daily-content a[href^="http"]').forEach(function (a) {
+    a.target = '_blank';
+    a.rel = 'noopener';
+});
+</script>
+
+{% endblock %}

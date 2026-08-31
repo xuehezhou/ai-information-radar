@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AI信息雷达</string>
+    <string name="app_title">📡 AI信息雷达</string>
+    <string name="btn_sync">同步</string>
+    <string name="btn_settings">设置</string>
+    <string name="status_offline">离线模式 · %d 期日报</string>
+    <string name="status_synced">已同步电脑 · %d 期日报</string>
+    <string name="status_syncing">正在同步…</string>
+    <string name="btn_back">← 返回</string>
+    <string name="btn_retry">重试</string>
+    <string name="err_missing">手机上还没有这期日报\n请返回首页点「同步」从电脑获取</string>
+    <string name="settings_title">同步设置</string>
+    <string name="settings_msg">电脑上的信息雷达地址（手机与电脑连同一 Wi-Fi 时自动同步最新日报）</string>
+    <string name="settings_save">保存</string>
+    <string name="settings_cancel">取消</string>
+</resources>

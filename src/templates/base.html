@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI信息雷达{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='radar.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- 报纸刊头 -->
+    <header class="masthead">
+        <div class="masthead-inner">
+            <div class="masthead-side masthead-left">{{ today }}</div>
+            <div class="masthead-center">
+                <div class="masthead-logo">📡 AI信息雷达</div>
+                <div class="masthead-slogan">看懂AI行业变化 · 发现创造者的机会</div>
+            </div>
+            <div class="masthead-side masthead-right">共 {{ total }} 期</div>
+        </div>
+        <div class="masthead-rule"></div>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-rule"></div>
+        <p>AI信息雷达 · 每日AI行业资讯精选 · 数据由公开信源采集并经AI分析整理</p>
+    </footer>
+</body>
+</html>

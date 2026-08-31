@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}AI信息雷达 · 未找到{% endblock %}
+
+{% block content %}
+<section class="empty">
+    <h1>404</h1>
+    <p>找不到这期日报，或日期格式不正确。</p>
+    <p><a href="{{ url_for('index') }}">← 返回首页</a></p>
+</section>
+{% endblock %}

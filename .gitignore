@@ -1,0 +1,38 @@
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Python generated files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Runtime data is private and machine-specific
+data/
+*.log
+*.tmp
+
+# Generated Android reports and release packages
+android/assets/index.json
+android/assets/reports/
+android/dist/
+*.apk
+*.aab
+
+# Local migration/diagnostic helpers with machine paths
+tools/diagnose.ps1
+tools/normalize_bat.ps1
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

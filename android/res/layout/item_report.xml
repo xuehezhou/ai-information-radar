@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_input"
+    android:layout_marginStart="0dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="3dp"
+    android:padding="14dp">
+
+    <!-- 日期 + A级徽章 + 未读红点 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/row_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@color/navy"/>
+
+        <TextView
+            android:id="@+id/row_a"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_badge"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:textSize="11sp"
+            android:textColor="@color/white"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/row_dot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="●"
+            android:textSize="15sp"
+            android:textColor="@color/accent"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <!-- 一句话总结 -->
+    <TextView
+        android:id="@+id/row_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textSize="14sp"
+        android:textColor="#555555"
+        android:maxLines="2"
+        android:ellipsize="end"/>
+
+    <!-- 统计行 -->
+    <TextView
+        android:id="@+id/row_stats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="12sp"
+        android:textColor="#888888"/>
+
+</LinearLayout>

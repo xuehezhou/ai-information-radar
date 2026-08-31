@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% block title %}AI信息雷达 · 每日AI行业资讯{% endblock %}
+
+{% block content %}
+
+<div class="realtime-bar" id="report-update-bar" aria-live="polite">
+    <span id="report-update-message">
+        {% if report_update_status.active_target_date %}
+        正在补齐 {{ report_update_status.active_target_date }} 日报，当前页面仍可正常阅读。
+        {% elif report_update_status.status == 'success' %}
+        昨日日报已完成：{{ report_update_status.target_date }}。
+        {% elif report_update_status.status == 'running' %}
+        昨日日报正在生成中，完成后请刷新。当前继续显示最近一期已完成日报{% if latest_completed_report %}：{{ latest_completed_report.date }}{% endif %}。
+        {% elif report_update_status.status == 'failed' %}
+        昨日日报生成失败。当前继续显示最近一期已完成日报{% if latest_completed_report %}：{{ latest_completed_report.date }}{% endif %}。
+        {% elif report_update_status.can_start %}
+        昨日日报尚未生成，可检查并启动后台生成。
+        {% else %}
+        昨日日报将在 00:05 开始生成。
+        {% endif %}
+    </span>
+    <button
+        class="hero-btn"
+        id="report-update-button"
+        type="button"
+        style="border: 0; cursor: pointer; margin: 0 0 0 12px;"
+    >
+        {% if report_update_status.active_target_date %}正在生成日报
+        {% elif report_update_status.status == 'failed' %}重新生成 / 重试
+        {% elif report_update_status.next_pending_date %}刷新 / 补齐日报
+        {% else %}刷新 / 检查更新{% endif %}
+    </button>
+    <span id="report-continuity-message" class="realtime-note">
+        {% if report_update_status.continuity.missing_dates %}
+        · 日报连续性 {{ report_update_status.continuity.completed_count }}/{{ report_update_status.continuity.expected_count }}；
+        可直接补齐 {{ report_update_status.continuity.recoverable_dates|length }} 期，
+        缺少信息池 {{ report_update_status.continuity.missing_pool_dates|length }} 期。
+        {% else %}
+        · 日报连续性完整（{{ report_update_status.continuity.completed_count }} 期）。
+        {% endif %}
+    </span>
+</div>
+
+{% if today_update.state == 'collecting' %}
+<div class="realtime-bar">
+    📡 今日实时雷达 · {{ today_date }} 正在持续收集
+    <span class="realtime-note">最终日报将在明日 00:05 生成；当前显示最近一期已完成日报{% if latest_completed_report %}：{{ latest_completed_report.date }}{% endif %}。</span>
+</div>
+{% elif today_update.state == 'failed' %}
+<div class="realtime-bar">
+    ⚠️ 今日实时采集失败，当前显示最近一期已完成日报{% if latest_completed_report %}：{{ latest_completed_report.date }}{% endif %}。
+</div>
+{% elif today_update.state == 'scheduled' %}
+<div class="realtime-bar">
+    📡 今日实时雷达 · {{ today_date }} 等待首次采集；最终日报将在明日 00:05 生成。
+</div>
+{% endif %}
+
+{% if daily_reports %}
+
+<!-- 实时采集状态条（仅当日有采集数据时显示） -->
+{% if today_realtime %}
+<div class="realtime-bar">
+    今日实时信息池已采集 <strong>{{ today_realtime.total }}</strong> 条AI资讯
+    {% if today_realtime.a_count > 0 %}
+    · <span class="realtime-a">{{ today_realtime.a_count }} 条A级事件</span>
+    {% endif %}
+    {% if today_realtime.source_health_total > 0 %}
+    · 信源可用 <strong>{{ today_realtime.source_health_available }}/{{ today_realtime.source_health_total }}</strong>
+        {% if today_realtime.partial_sources %}
+        · 部分成功：{{ today_realtime.partial_sources | join('、') }}
+        {% endif %}
+        {% if today_realtime.failed_sources %}
+        · ⚠️ 失败：{{ today_realtime.failed_sources | join('、') }}
+        {% endif %}
+        {% if today_realtime.empty_sources %}
+        · 暂无返回：{{ today_realtime.empty_sources | join('、') }}
+        {% endif %}
+    {% endif %}
+    <span class="realtime-note">（持续变化，不是最终日报）</span>
+</div>
+{% endif %}
+
+<!-- 头条区：最新一期 -->
+<section class="hero">
+    <div class="hero-date">
+        最新已完成日报 · {{ latest_completed_report.date }}
+        {% if not latest_completed_report.is_read %}<span class="hero-unread-tag">● 未读</span>{% endif %}
+    </div>
+    <h1 class="hero-headline">{{ latest_completed_report.summary }}</h1>
+    <a class="hero-btn" href="{{ url_for('daily', date_str=latest_completed_report.date) }}">
+        阅读完整日报 →
+    </a>
+</section>
+
+<!-- 未读日报 -->
+{% if unread %}
+<section class="section">
+    <h2 class="section-title unread-title">
+        🔴 未读日报 <span class="section-count">{{ unread|length }}</span>
+    </h2>
+    <div class="card-grid">
+        {% for issue in unread %}
+        <a class="card card-unread" href="{{ url_for('daily', date_str=issue.date) }}">
+            <div class="card-top">
+                <span class="card-date">{{ issue.date }}</span>
+                {% if issue.stats.a_level > 0 %}
+                <span class="card-badge">{{ issue.stats.a_level }} 条A级</span>
+                {% endif %}
+            </div>
+            <p class="card-summary">{{ issue.summary }}</p>
+            <div class="card-stats">
+                <span>📌 {{ issue.stats.events }} 个事件</span>
+                <span>🧠 {{ issue.stats.models }} 个新模型</span>
+                <span>💡 {{ issue.stats.chances }} 个机会</span>
+            </div>
+            <div class="card-link">阅读全文 →</div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- 已读日报 -->
+{% if read_issues %}
+<section class="section">
+    <h2 class="section-title read-title">
+        ✅ 已读日报 <span class="section-count">{{ read_issues|length }}</span>
+    </h2>
+    <div class="card-grid">
+        {% for issue in read_issues %}
+        <a class="card card-read" href="{{ url_for('daily', date_str=issue.date) }}">
+            <div class="card-top">
+                <span class="card-date">{{ issue.date }}</span>
+                {% if issue.stats.a_level > 0 %}
+                <span class="card-badge card-badge-dim">{{ issue.stats.a_level }} 条A级</span>
+                {% endif %}
+            </div>
+            <p class="card-summary">{{ issue.summary }}</p>
+            <div class="card-stats">
+                <span>📌 {{ issue.stats.events }} 个事件</span>
+                <span>🧠 {{ issue.stats.models }} 个新模型</span>
+                <span>💡 {{ issue.stats.chances }} 个机会</span>
+            </div>
+            <div class="card-link">重新阅读 →</div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% else %}
+
+<!-- 空状态 -->
+<section class="empty">
+    <h1>📡 还没有日报</h1>
+    <p>目前 <code>data/daily/</code> 目录为空。</p>
+    <p>等待次日 00:05 自动结算，或点击上方按钮检查并启动昨日日报生成。</p>
+    <pre>python src/generate_daily.py --finalize-yesterday</pre>
+</section>
+
+{% endif %}
+
+<script>
+(() => {
+    const button = document.getElementById("report-update-button");
+    const message = document.getElementById("report-update-message");
+    const continuityMessage = document.getElementById("report-continuity-message");
+    const displayedDate = {{ (latest_completed_report.date if latest_completed_report else '') | tojson }};
+    let pollTimer = null;
+
+    function renderUpdateStatus(data) {
+        const continuity = data.continuity || {};
+        const missing = continuity.missing_dates || [];
+        const recoverable = continuity.recoverable_dates || [];
+        const missingPool = continuity.missing_pool_dates || [];
+        continuityMessage.textContent = missing.length
+            ? ` · 日报连续性 ${continuity.completed_count}/${continuity.expected_count}；可直接补齐 ${recoverable.length} 期，缺少信息池 ${missingPool.length} 期。`
+            : ` · 日报连续性完整（${continuity.completed_count || 0} 期）。`;
+
+        if (data.active_target_date) {
+            message.textContent = `正在补齐 ${data.active_target_date} 日报，当前页面仍可正常阅读。`;
+            button.disabled = true;
+            button.textContent = "正在生成日报";
+            schedulePoll();
+            return;
+        }
+
+        if (data.status === "success") {
+            message.textContent = `昨日日报已完成：${data.target_date}。`;
+            button.disabled = false;
+            button.textContent = data.next_pending_date ? "刷新 / 补齐日报" : "刷新 / 检查更新";
+            if (data.latest_completed_date && data.latest_completed_date !== displayedDate) {
+                window.location.reload();
+            }
+            return;
+        }
+
+        if (data.status === "running") {
+            const fallback = data.latest_completed_date
+                ? `当前继续显示最近一期已完成日报：${data.latest_completed_date}。`
+                : "当前还没有已完成日报。";
+            message.textContent = `昨日日报正在生成中，完成后请刷新。${fallback}`;
+            button.disabled = true;
+            button.textContent = "正在生成昨日日报";
+            schedulePoll();
+            return;
+        }
+
+        button.disabled = false;
+        if (data.status === "failed") {
+            const fallback = data.latest_completed_date
+                ? `当前继续显示最近一期已完成日报：${data.latest_completed_date}。`
+                : "当前还没有已完成日报。";
+            message.textContent = `昨日日报生成失败。${fallback}`;
+            button.textContent = "重新生成 / 重试";
+            return;
+        }
+
+        message.textContent = data.can_start
+            ? "昨日日报尚未生成，可检查并启动后台生成。"
+            : "昨日日报将在 00:05 开始生成。";
+        button.textContent = data.next_pending_date ? "刷新 / 补齐日报" : "刷新 / 检查更新";
+    }
+
+    function schedulePoll() {
+        if (pollTimer !== null) return;
+        pollTimer = window.setTimeout(async () => {
+            pollTimer = null;
+            await checkUpdate(false);
+        }, 5000);
+    }
+
+    async function checkUpdate(startIfNeeded) {
+        button.disabled = true;
+        try {
+            const response = await fetch(
+                startIfNeeded ? "/api/update-check" : "/api/update-status",
+                { method: startIfNeeded ? "POST" : "GET" }
+            );
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            renderUpdateStatus(await response.json());
+        } catch (error) {
+            message.textContent = "检查更新失败，请稍后重试。当前日报不受影响。";
+            button.disabled = false;
+            button.textContent = "刷新 / 检查更新";
+        }
+    }
+
+    button.addEventListener("click", () => checkUpdate(true));
+    if ({{ (report_update_status.status == 'running' or report_update_status.active_target_date) | tojson }}) schedulePoll();
+})();
+</script>
+
+{% endblock %}

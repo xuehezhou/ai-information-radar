@@ -1,0 +1,141 @@
+/* ================================================
+   AI信息雷达 · 手机离线阅读样式
+   （打包进 APK，与网页版同一套视觉语言）
+   ================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: #f7f5f0;           /* 报纸底色 */
+    color: #1a1a1a;               /* 正文墨色 */
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    line-height: 1.75;
+}
+
+/* ---- 顶部信息条（sticky） ---- */
+.app-head {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #0f2336;          /* 深海军蓝 */
+    color: #fff;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.app-head .app-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.app-head .app-date {
+    font-size: 13px;
+    color: #8fb6d4;
+    font-weight: 600;
+}
+
+/* ---- 正文 ---- */
+.daily-content {
+    padding: 22px 16px 12px;
+}
+
+.daily-content h1 {
+    font-family: "Songti SC", "SimSun", serif;
+    font-size: 21px;
+    margin: 26px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #d8d3c8;
+}
+.daily-content h1:first-child { margin-top: 0; }
+
+.daily-content h2 {
+    font-family: "Songti SC", "SimSun", serif;
+    font-size: 18px;
+    color: #b8221a;               /* 新闻红 */
+    margin: 22px 0 10px;
+}
+
+.daily-content h3 { font-size: 15px; margin: 18px 0 8px; }
+
+.daily-content p  { margin: 10px 0; font-size: 15px; }
+.daily-content ul, .daily-content ol { margin: 10px 0 10px 22px; font-size: 15px; }
+.daily-content li { margin: 5px 0; }
+
+.daily-content blockquote {
+    border-left: 4px solid #d4930a;  /* 金 */
+    background: #faf6ec;
+    padding: 10px 14px;
+    margin: 14px 0;
+    color: #6b5a2e;
+}
+
+.daily-content code {
+    background: #f0ede6;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: Consolas, "Courier New", monospace;
+}
+
+.daily-content pre {
+    background: #f0ede6;
+    padding: 12px 14px;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 12px 0;
+    font-size: 13px;
+}
+
+.daily-content hr {
+    border: none;
+    border-top: 1px solid #d8d3c8;
+    margin: 24px 0;
+}
+
+.daily-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 13px;
+}
+.daily-content th, .daily-content td {
+    border: 1px solid #d8d3c8;
+    padding: 7px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+.daily-content th {
+    background: #f5f1e8;
+    font-weight: 700;
+}
+
+.daily-content a { color: #b8221a; }
+
+/* ---- 上一篇/下一篇导航 ---- */
+.reader-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 20px 16px 8px;
+}
+.reader-nav a {
+    flex: 1;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #d8d3c8;
+    color: #b8221a;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 11px 8px;
+    border-radius: 4px;
+}
+.reader-nav a:empty { visibility: hidden; }
+
+/* ---- 底部 ---- */
+.app-foot {
+    padding: 14px 16px 30px;
+    text-align: center;
+    font-size: 11px;
+    color: #999;
+}
